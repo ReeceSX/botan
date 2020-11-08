@@ -235,6 +235,14 @@ bool operator<(const X509_DN& dn1, const X509_DN& dn2)
    return false;
    }
 
+std::vector<uint8_t> X509_DN::DER_encode() const
+   {
+   std::vector<uint8_t> result;
+   DER_Encoder der(result);
+   this->encode_into(der);
+   return result;
+   }
+
 /*
 * DER encode a DistinguishedName
 */
@@ -277,6 +285,9 @@ void X509_DN::decode_from(BER_Decoder& source)
       .raw_bytes(bits)
    .end_cons();
 
+   m_rdn.clear();
+   m_dn_bits = bits;
+
    BER_Decoder sequence(bits);
 
    while(sequence.more_items())
@@ -296,8 +307,6 @@ void X509_DN::decode_from(BER_Decoder& source)
          add_attribute(oid, str);
          }
       }
-
-   m_dn_bits = bits;
    }
 
 namespace {
