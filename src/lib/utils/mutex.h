@@ -1,8 +1,8 @@
 /*
-* (C) 2016 Jack Lloyd
-*
-* Botan is released under the Simplified BSD License (see license.txt)
-*/
+ * (C) 2016 Jack Lloyd
+ *
+ * Botan is released under the Simplified BSD License (see license.txt)
+ */
 
 #ifndef BOTAN_UTIL_MUTEX_H_
 #define BOTAN_UTIL_MUTEX_H_
@@ -13,47 +13,58 @@
 
 #include <mutex>
 
-namespace Botan {
+namespace Botan
+{
 
-template<typename T> using lock_guard_type = std::lock_guard<T>;
+template <typename T> using lock_guard_type = std::lock_guard<T>;
 typedef std::mutex mutex_type;
 typedef std::recursive_mutex recursive_mutex_type;
 
-}
+} // namespace Botan
 
 #else
 
 // No threads
 
-namespace Botan {
+namespace Botan
+{
 
-template<typename Mutex>
-class lock_guard final
-   {
-   public:
-      explicit lock_guard(Mutex& m) : m_mutex(m)
-         { m_mutex.lock(); }
+template <typename Mutex> class lock_guard final
+{
+  public:
+    explicit lock_guard(Mutex &m) : m_mutex(m)
+    {
+        m_mutex.lock();
+    }
 
-      ~lock_guard() { m_mutex.unlock(); }
+    ~lock_guard()
+    {
+        m_mutex.unlock();
+    }
 
-      lock_guard(const lock_guard& other) = delete;
-      lock_guard& operator=(const lock_guard& other) = delete;
-   private:
-      Mutex& m_mutex;
-   };
+    lock_guard(const lock_guard &other) = delete;
+    lock_guard &operator=(const lock_guard &other) = delete;
+
+  private:
+    Mutex &m_mutex;
+};
 
 class noop_mutex final
-   {
-   public:
-      void lock() {}
-      void unlock() {}
-   };
+{
+  public:
+    void lock()
+    {
+    }
+    void unlock()
+    {
+    }
+};
 
 typedef noop_mutex mutex_type;
 typedef noop_mutex recursive_mutex_type;
-template<typename T> using lock_guard_type = lock_guard<T>;
+template <typename T> using lock_guard_type = lock_guard<T>;
 
-}
+} // namespace Botan
 
 #endif
 
